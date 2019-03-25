@@ -20,6 +20,7 @@ const tie_interceptor = { type:'TIE Interceptor', health: 50, status: '',
 const squadronOptions = [x_wing, y_wing, a_wing];
 const enemySquadronOptions = [tie_fighter, tie_bomber, tie_interceptor];
 
+
 var userSquadron = {
   units: [],
   health: 0, attack: 0, armor: 0, speed: 0,
@@ -69,16 +70,34 @@ var enemySquadron = {
       $('#enemy-' + i).find('.ship-type').text(this.units[i].type);
     }
   }
-};
+}
 
+var game = {
+  damage: 0,
+
+  attack: function(offense,defense){
+    this.damage = offense.attack * 3 - defense.armor * 2;
+    defense.health -= this.damage;
+  },
+
+  reset: function(){
+    $('#squadron-selection')
+    userSquadron.units = [];
+    enemySquadron.units = [];
+
+  }
+
+}
 
 
 $(document).ready(function(){
-
+  $('body').scrollspy({ target: '#dialogue-box' });
+  const dialogueOpen = '<li class="list-group-item bg-dark">';
+  const dialogueClose = '</li>';
 
   // Load Squadron Options
   for(i=0; i<squadronOptions.length; i++){
-    var opt = '<div id="selection-' + (i) + '" class="card"><img src="" class="card-img-top" alt="..."><div class="card-body"><h5 class="card-title type"></h5></div><ul class="list-group list-group-flush"><li class="list-group-item health"></li><li class="list-group-item attack"></li><li class="list-group-item armor"></li><li class="list-group-item speed"></li></ul></div>';
+    var opt = '<div id="selection-' + (i) + '" class="card"><img src="" class="card-img-top ship-image" alt="..."><ul class="list-group list-group-flush"><li class="list-group-item type"></li><li class="list-group-item health"></li><li class="list-group-item attack"></li><li class="list-group-item armor"></li><li class="list-group-item speed"></li></ul></div>';
     $('#squadron-selection').append(opt);
     $('#selection-' + i).find('.card-img-top').attr("src", squadronOptions[i].img);
     $('#selection-' + i).find('.type').text(squadronOptions[i].type);
@@ -92,6 +111,7 @@ $(document).ready(function(){
   $('#selection-0').on('click', function(){
     if(userSquadron.units.length < 5){
       userSquadron.units.push(x_wing);
+      $('#dialogue-box').append(dialogueOpen + ('Select ' + (5 - userSquadron.units.length) + ' more ships.') + dialogueClose);
     }
     else{
       if(confirm('Do you want to continue with your team?')){
@@ -100,9 +120,8 @@ $(document).ready(function(){
         enemySquadron.setStats();
         userSquadron.loadTeam();
         enemySquadron.loadTeam();
-        $('#selection-0').hide();
-        $('#selection-1').hide();
-        $('#selection-2').hide();
+        $('#attack').show();
+        $('#squadron-selection').hide();
       }
       else{
           userSquadron.units = [];
@@ -112,6 +131,7 @@ $(document).ready(function(){
   $('#selection-1').on('click', function(){
     if(userSquadron.units.length < 5){
       userSquadron.units.push(y_wing);
+      $('#dialogue-box').append(dialogueOpen + ('Select ' + (5 - userSquadron.units.length) + ' more ships.') + dialogueClose);
     }
     else{
       if(confirm('Do you want to continue with your team?')){
@@ -120,9 +140,8 @@ $(document).ready(function(){
         enemySquadron.setStats();
         userSquadron.loadTeam();
         enemySquadron.loadTeam();
-        $('#selection-0').hide();
-        $('#selection-1').hide();
-        $('#selection-2').hide();
+        $('#attack').show();
+        $('#squadron-selection').hide();
       }
       else{
           userSquadron.units = [];
@@ -132,6 +151,7 @@ $(document).ready(function(){
   $('#selection-2').on('click', function(){
     if(userSquadron.units.length < 5){
       userSquadron.units.push(a_wing);
+      $('#dialogue-box').append(dialogueOpen + ('Select ' + (5 - userSquadron.units.length) + ' more ships.') + dialogueClose);
     }
     else{
       if(confirm('Do you want to continue with your team?')){
@@ -140,13 +160,25 @@ $(document).ready(function(){
         enemySquadron.setStats();
         userSquadron.loadTeam();
         enemySquadron.loadTeam();
-        $('#selection-0').hide();
-        $('#selection-1').hide();
-        $('#selection-2').hide();
+        $('#attack').show();
+        $('#squadron-selection').hide();
       }
       else{
           userSquadron.units = [];
       }
+    }
+  });
+
+  $('#attack').on('click', function(){
+    game.attack(userSquadron, enemySquadron);
+    $('#dialogue-box').append(dialogueOpen + ('Enemy took' + game.damage + 'damage.') + dialogueClose);
+    if(enemySquadron.health <= 0 && confirm('Destroyed enemy squad. Do you want to play again?')){
+      game.reset();
+    };
+    game.attack(enemySquadron, userSquadron);
+    $('#dialogue-box').append(dialogueOpen + ('You took' + game.damage + 'damage.') + dialogueClose);
+    if(userSquadron.health <= 0 && confirm('Your squad was destroyed. Do you want to play again?'){
+      game.reset();
     }
   });
 

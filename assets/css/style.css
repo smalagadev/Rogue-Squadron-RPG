@@ -1,15 +1,23 @@
-/* body{
+body{
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  background: black;
+  background: url('../images/battlefield.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
+#selection-0:hover{
+  border-color:  #feda4a;
+}
 
-#game-menu{
-  height: 100vh;
-  padding: 0px;
+#selection-1:hover{
+  border-color:  #feda4a;
+}
+
+#selection-2:hover{
+  border-color:  #feda4a;
 }
 
 #game-display{
@@ -17,25 +25,19 @@
   padding: 0px;
 }
 
+#attack{
+  display: none;
+  color: #feda4a;
+}
+
 .ship-image{
-  width: 200px;
-  height: 100px;
-} */
-
-
-/* test */
-
-#battlefield{
-  background-image: url('../images/battlefield.jpg');
-  background-repeat: none;
+  width: 180px;
+  height: 90px;
 }
 
-img.card-img-top{
-  height: 100px;
-  width: 200px;
-}
-
-img.ship-image{
-  height: 100px;
-  width: 200px;
+#dialogue-box{
+  opacity: 50;
+  color: #feda4a;
+  overflow-y: scroll;
+  max-height: 200px;
 }
